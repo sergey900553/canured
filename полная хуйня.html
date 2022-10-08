@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .article {
+            margin: 30px 0px;
+            background: #ffffff;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label,
+        textarea {
+            font-size: 20px;
+            color: #2c2d36
+        }
+
+        .text__for_search {
+            margin-top: 19px;
+            font-size: 20px;
+            word-break: break-word;
+        }
+
+        textarea {
+            padding: 10px;
+            max-width: 100%;
+            line-height: 1.5;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 1px #999;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="article">
+
+            <label id="label-story" for="story">Can u read it?</label>
+
+            <textarea id="story" name="story" rows="5" cols="33" placeholder="Tell your story"></textarea>
+
+
+            <p class="text__for_search"> </p>
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <script>
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+
+            // While there remain elements to shuffle.
+            while (currentIndex != 0) {
+
+                // Pick a remaining element.
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+
+                // And swap it with the current element.
+                [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]];
+            }
+
+            return array;
+        }
+
+
+
+        function canUread(text) {
+            let punctuation = "[.,\/#«»!$%\^&?\*;:{}=\-_`~()]";
+            let strArray = Array.from(text);
+            let word = [];
+
+            strArray.forEach((letter, i) => {
+                word.push({
+                    id: i,
+                    letter: letter,
+                    isPunctuation: punctuation.includes(letter) ? true : false,
+                    isFirstWitoutPunct: false,
+                    isLasttWitoutPunct: false,
+                    isShuffled: undefined,
+                    canShuffle: undefined,
+                })
+            })
+
+            ////////// set first and last letter
+            let wordNoPunctuation = [];
+            word.forEach((letter) => {
+                if (letter.isPunctuation === false) {
+                    wordNoPunctuation.push(letter)
+                }
+            });
+
+
+
+            let firstLetter = wordNoPunctuation[0].isFirstWitoutPunct = true;
+            let lastLetter = wordNoPunctuation[wordNoPunctuation.length - 1].isLasttWitoutPunct = true;
+
+
+            word.forEach(letter => {
+                if (letter.id === firstLetter.id) letter.isFirstWitoutPunct = true;
+                if (letter.id === lastLetter.id) letter.isLasttWitoutPunct = true;
+            })
+
+            //////////////// CanShuffle?
+
+            word.forEach((letter) => {
+                if (letter.isPunctuation !== true && letter.isFirstWitoutPunct !== true && letter.isLasttWitoutPunct !== true) {
+
+                    letter.canShuffle = true;
+                }
+            });
+
+
+            let canShuffle = [];
+
+            word.forEach((letter) => {
+                if (letter.canShuffle === true) {
+                    canShuffle.push(letter)
+                }
+            });
+
+            ////////////////// Смешать и поставить в массив
+
+            let Shuffled = shuffle(canShuffle);
+
+            let i = 0;
+            let shuffledAndDone = word.map((letter) => {
+                if (letter.canShuffle === true && letter.isShuffled === undefined) {
+                    return Shuffled[i++];
+                }
+                return letter;
+            })
+
+
+            ///////////////////////////
+
+            // return shuffledAndDone;
+
+
+            let doneWord = [];
+
+            shuffledAndDone.forEach(e => {
+                if (e.canShuffle) {
+                 return   doneWord.push(e.letter.toLowerCase());
+                }
+
+
+                doneWord.push(e.letter);
+            });
+
+
+            return doneWord.join("");
+        }
+
+        function canUreadText(text) {
+            let justWords = text.split(" ");
+            let doneText = [];
+
+            justWords.forEach(word => {
+                if (word.length <= 3) doneText.push(word);
+                if (word.length > 3) doneText.push(canUread(word));
+
+            });
+
+            return doneText.join(" ");
+        };
+
+
+
+
+        const story = document.querySelector("#story");
+        const text = document.querySelector('.text__for_search')
+
+
+        story.addEventListener('input', e => {
+            let inputValue = e.currentTarget.value;
+            console.log(inputValue)
+            text.innerHTML = canUreadText(inputValue);
+
+        })
+    </script>
+</body>
+
+</html>
