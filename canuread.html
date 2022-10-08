@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .article {
+            margin: 30px 0px;
+            background: #ffffff;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label, textarea
+       {
+            font-size: 20px; 
+            color: #2c2d36
+        }
+
+        .text__for_search {
+            margin-top:19px;
+            font-size: 20px;
+            word-break: break-word;
+        }
+        textarea {
+            padding: 10px;
+            max-width: 100%;
+            line-height: 1.5;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 1px #999;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="article">
+
+            <label id="label-story" for="story">Can u read it?</label>
+
+            <textarea id="story" name="story" rows="5" cols="33" placeholder="Tell your story"></textarea>
+
+
+            <p class="text__for_search"> </p>
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <script>
+        function SpacesAndPunctuation(word) {
+            let punctuation = "[.,\/#!$%\^&?\*;:{}=\-_`~()]";
+
+            let letters = word.split("");
+
+            let wordWithSpaces = letters.map((letter) => {
+                if (punctuation.includes(letter)) return letter;
+                return " ";
+            });
+
+            return wordWithSpaces.join("");
+        }
+
+
+
+
+        function shuffleWord(word) {
+            let shuffledWord = '';
+            word = word.split('');
+            while (word.length > 0) {
+                shuffledWord += word.splice(word.length * Math.random() << 0, 1);
+            }
+            return shuffledWord;
+        }
+
+
+
+
+        function CanYouRead(text) {
+            let justWords = text.split(" ");
+            let spacesAndPunctuation = [];
+            let wordNoPunctuation = [];
+            let wordNoPunctuationShaffled = [];
+
+            justWords.forEach((word) => {
+                spacesAndPunctuation.push(SpacesAndPunctuation(word));
+                wordNoPunctuation.push((word.replace(/[.,\/#!$%\^&?\*;:{}=\-_`~()]/g, "")));
+            });
+
+
+            wordNoPunctuation.map(e => {
+                if (e.length <= 3) return wordNoPunctuationShaffled.push(e);
+                if (/\d/.test.e) return wordNoPunctuationShaffled.push(e);
+                noFLLL = e.slice(1, -1);
+                fl = e.charAt(0);
+                ll = e.charAt(e.length - 1);
+
+                wordNoPunctuationShaffled.push(fl + shuffleWord(noFLLL).toLowerCase() + ll)
+            })
+
+
+            let done = [];
+
+
+
+            for (let i = 0; i < spacesAndPunctuation.length; i++) {
+                const element = spacesAndPunctuation[i];
+
+                let s = element.replace(/\s*/, wordNoPunctuationShaffled[i]);
+
+
+                done.push(s)
+
+            }
+
+            return done.join(" ");
+        };
+
+
+
+
+        const story = document.querySelector("#story");
+        const text = document.querySelector('.text__for_search')
+
+
+        story.addEventListener('input', e => {
+            let inputValue = e.currentTarget.value;
+            console.log(inputValue)
+            text.innerHTML = CanYouRead(inputValue);
+
+        })
+    </script>
+</body>
+
+</html>
+
